@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 #### Problem 1 ####
 print('\n*********** PROBLEM 1 ***********')
 print('New York Times -- First 10 Story Headings\n')
-uhand = urllib.request.urlopen("https://www.nytimes.com/")
+rq = urllib.request.Request("https://www.nytimes.com/")
+uhand = urllib.request.urlopen(rq)
 html1 = uhand.read()
 soup1 = BeautifulSoup(html1,'html.parser')
 i = 1
@@ -24,7 +25,8 @@ print('\n*********** PROBLEM 2 ***********')
 print('Michigan Daily -- MOST READ\n')
 
 ### Your Problem 2 solution goes here
-uhand = urllib.request.urlopen("https://www.michigandaily.com/")
+rq = urllib.request.Request("https://www.michigandaily.com/")
+uhand = urllib.request.urlopen(rq)
 html2 = uhand.read()
 soup2 = BeautifulSoup(html2, 'html.parser')
 for mr in soup2.find_all('div', class_='panel-pane pane-mostread'):
@@ -36,7 +38,8 @@ print('\n*********** PROBLEM 3 ***********')
 print("Mark's page -- Alt tags\n")
 
 ### Your Problem 3 solution goes here
-uhand = urllib.request.urlopen("http://newmantaylor.com/gallery.html")
+rq = urllib.request.Request("http://newmantaylor.com/gallery.html")
+uhand = urllib.request.urlopen(rq)
 html3 = uhand.read()
 soup3 = BeautifulSoup(html3, 'html.parser')
 for image in soup3.find_all('img'):
@@ -57,8 +60,9 @@ def GoToNext(obj):
 			return rs
 	return
 # print(GoToNext(BeautifulSoup(urllib.request.urlopen('https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=4&page=5').read(), 'html.parser')))
-mysock.connect(('https://www.si.umich.edu', 80))
-uhand = urllib.request.urlopen("https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=4")
+# mysock.connect(('https://www.si.umich.edu', 80))
+rq = urllib.request.Request("https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=4", None, {'User-Agent': 'SI_CLASS'})
+uhand = urllib.request.urlopen(rq)
 html4 = uhand.read()
 soup4 = BeautifulSoup(html4, 'html.parser')
 next4 = ""
@@ -66,7 +70,8 @@ i = 1
 while next4 or i == 1:
 	for item in soup4.find_all('div',class_='field-item even'):
 		if 'Contact Details' in item.text:
-			unew = urllib.request.urlopen("https://www.si.umich.edu"+item.a['href'])
+			nrq = urllib.request.Request("https://www.si.umich.edu"+item.a['href'],None, {'User-Agent': 'SI_CLASS'})
+			unew = urllib.request.urlopen(nrq)
 			htmlnew = unew.read()
 			soupN = BeautifulSoup(htmlnew, 'html.parser')
 			for item2 in soupN.find_all('div', class_='field-item even'):
@@ -75,6 +80,7 @@ while next4 or i == 1:
 					i += 1
 	next4 = GoToNext(soup4)
 	if next4:
-		uhand = urllib.request.urlopen(next4)
+		rq = urllib.request.Request(next4, None, {'User-Agent': 'SI_CLASS'})
+		uhand = urllib.request.urlopen(rq)
 		html4 = uhand.read()
 		soup4 = BeautifulSoup(html4, 'html.parser')
